@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"outDir": "./dist",
+		"experimentalDecorators": true,
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"target": "ESNext",
+		"module": "Preserve",
+		"moduleResolution": "Bundler",
+		"rootDir": ".",
+		"paths": {
+			"~/*": ["./src/*"]
+		},
+		"types": ["bun-types"]
+	},
+	"reflection": true
+	// "files": ["app.ts"]
+}
