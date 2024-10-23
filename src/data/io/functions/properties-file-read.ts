@@ -1,6 +1,6 @@
 import { deserialize } from "@deepkit/type"
 import { BlockTexturePropertiesFileEntry } from "~/data/io/library/block-texture-properties-file-entry"
-import { BlockTextureProperties } from "~/data/textures/models/block-texture-properties"
+import { BlockTextureProperties } from "~/data/properties/models/properties"
 
 export async function readBlockTexturePropertiesForEntry(fileEntry: BlockTexturePropertiesFileEntry): Promise<BlockTextureProperties | undefined> {
 	const filePath = fileEntry.path
@@ -16,6 +16,7 @@ export async function readBlockTexturePropertiesForEntry(fileEntry: BlockTexture
 	const rawObject = {
 		method: fileMap.get("method"),
 		tiles: fileMap.get("tiles"),
+		connectBlocks: fileMap.get("connectBlocks")?.split(" ").toSet(),
 		matchBlocks: fileMap.get("matchBlocks")?.split(" ").toSet(),
 		matchTiles: fileMap.get("matchTiles"),
 		connect: fileMap.get("connect") || "block",

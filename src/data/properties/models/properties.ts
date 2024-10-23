@@ -42,7 +42,8 @@ export class BlockTextureProperties {
 	constructor(
 		public method: BlockTextureMethod, // Required method for connecting textures
 		public tiles: BlockTextureTiles, // List of tiles (as string paths)
-		public matchBlocks?: Set<BlockId>, // Set of block names (e.g., "dirt", "minecraft:oak_stairs")
+		public connectBlocks?: Set<BlockId>, // Set of block names that act as connection origin block
+		public matchBlocks?: Set<BlockId>, // Set of block names that act as connection destination blocks
 		public matchTiles?: BlockTextureMatchTiles, // List of tile names this method should apply to
 		public connect: BlockTextureConnect = "block", // Default: block for blocks, tile for tiles
 		public faces?: Set<BlockFace>, // Optional faces to apply connection
