@@ -1,9 +1,7 @@
-import { AppPaths } from "~/app/config"
 import { readdir as readDirectory } from "node:fs/promises"
 import { join as joinPath } from "path"
-import { DirectoryName, DirectoryPath, FileName, FilePath } from "~/data/paths/paths"
-
-export type NamespaceName = string
+import { DirectoryName, DirectoryPath, FileName } from "~/data/io/library/paths"
+import { NamespaceName, BlockTexturePropertiesFileEntry } from "~/data/io/library/block-texture-properties-file-entry"
 
 export async function readNamespacedPaths(rootPath: DirectoryPath): Promise<DirectoryName[]> {
 	const rootGroups = await readDirectoryNames(rootPath)
@@ -11,12 +9,12 @@ export async function readNamespacedPaths(rootPath: DirectoryPath): Promise<Dire
 	return rootGroups
 }
 
-export async function readFiles(rootPath: DirectoryPath): Promise<PropertiesFileEntry[]> {
+export async function readFiles(rootPath: DirectoryPath): Promise<BlockTexturePropertiesFileEntry[]> {
 	const namespaces = await readNamespacedPaths(rootPath)
-	const entries: PropertiesFileEntry[] = []
+	const entries: BlockTexturePropertiesFileEntry[] = []
 
 	for (const namespace of namespaces) {
-		const namespaceRootPath = joinPath(AppPaths.rootPath, namespace, "optifine", "ctm")
+		const namespaceRootPath = joinPath(rootPath, namespace, "optifine", "ctm")
 		const overlaysRootPath = joinPath(namespaceRootPath, "_overlays")
 
 		const rootGroups = await readDirectoryNames(namespaceRootPath)
@@ -26,6 +24,7 @@ export async function readFiles(rootPath: DirectoryPath): Promise<PropertiesFile
 		const overlayFileEntries = await propertiesFileEntriesForNamespace(namespace, overlaysRootPath, overlayGroups, true)
 
 		const totalNumberOfEntries = rootFileEntries.length + overlayFileEntries.length
+
 		console.log(`Added ${totalNumberOfEntries} properties file entries for namespace '${namespace}'.`)
 
 		entries.push(...rootFileEntries, ...overlayFileEntries)
@@ -39,7 +38,7 @@ export async function propertiesFileEntriesForNamespace(
 	namespaceRootPath: DirectoryPath,
 	groups: DirectoryName[],
 	overlay: boolean
-): Promise<PropertiesFileEntry[]> {
+): Promise<BlockTexturePropertiesFileEntry[]> {
 	const unfilteredFileEntries = await Promise.all(
 		groups.map(async group => {
 			const groupPath = joinPath(namespaceRootPath, group)
@@ -52,7 +51,7 @@ export async function propertiesFileEntriesForNamespace(
 
 			const propertiesFilePath = joinPath(groupPath, propertiesFileName)
 
-			const fileEntry: PropertiesFileEntry = {
+			const fileEntry: BlockTexturePropertiesFileEntry = {
 				namespace: namespace,
 				path: propertiesFilePath,
 				file: propertiesFileName,
@@ -75,17 +74,9 @@ export async function propertiesFileNameForNamespace(groupPath: DirectoryPath): 
 export async function readDirectoryNames(path: DirectoryPath): Promise<DirectoryName[]> {
 	try {
 		const recordNames = await readDirectory(path)
-		return recordNames.filter(name => !name.includes("."))
+		return recordNames.filter(name => !name.includes(".") && !name.includes("_overlays"))
 	} catch (error) {
-		console.log(`Could not list directory contents at '...${path.substring(-32)}', does not exist or can not be accessed.`)
+		// console.log(`Could not list directory contents at '...${path.substring(-32)}', does not exist or can not be accessed.`)
 		return []
 	}
-}
-
-interface PropertiesFileEntry {
-	namespace: NamespaceName
-	path: FilePath
-	file: FileName
-	group: DirectoryName
-	overlay: boolean
 }

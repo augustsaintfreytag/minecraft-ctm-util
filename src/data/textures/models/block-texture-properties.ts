@@ -38,14 +38,14 @@ export type BlockTextureConnect = "block" | "tile" | "state"
 
 // Properties
 
-export class ConnectedTextureProperties {
+export class BlockTextureProperties {
 	constructor(
 		public method: BlockTextureMethod, // Required method for connecting textures
 		public tiles: BlockTextureTiles, // List of tiles (as string paths)
 		public matchBlocks?: Set<BlockId>, // Set of block names (e.g., "dirt", "minecraft:oak_stairs")
 		public matchTiles?: BlockTextureMatchTiles, // List of tile names this method should apply to
 		public connect: BlockTextureConnect = "block", // Default: block for blocks, tile for tiles
-		public faces?: BlockFace[], // Optional faces to apply connection
+		public faces?: Set<BlockFace>, // Optional faces to apply connection
 		public biomes?: Set<BiomeId>, // Optional list of biomes
 		public heights?: Set<integer>, // Optional height restrictions
 		public tintIndex: BlockTintIndex = -1, // Default: -1 (disabled)
