@@ -5,7 +5,8 @@ import { JSONTransport, Logger } from "@deepkit/logger"
 import "~/types/extensions"
 
 import { AppConfig } from "~/app/config"
-import { readFiles } from "~/data/io/file-read"
+import { readFiles } from "~/data/io/file-list"
+import { DirectoryPath } from "~/data/paths/paths"
 
 new App({
 	config: AppConfig,
@@ -22,7 +23,11 @@ new App({
 			module.getImportedModuleByClass(FrameworkModule).configure({ debug: false })
 		}
 	})
-	.command("hello", async () => {
-		console.log("Hello")
+	.command("list", async (path: DirectoryPath) => {
+		const fileEntries = await readFiles(path)
+
+		fileEntries.forEach(fileEntry => {
+			console.log(`Namespace: '${fileEntry.namespace}', Group: '${fileEntry.group}', File: '${fileEntry.file}', Overlay: ${fileEntry.overlay}`)
+		})
 	})
 	.run()
