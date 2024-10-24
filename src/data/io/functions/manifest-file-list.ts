@@ -1,6 +1,6 @@
 import { readdir as readDirectory } from "node:fs/promises"
-import { join as joinPath } from "path"
-import { DirectoryName, DirectoryPath, FileName } from "~/data/io/library/paths"
+import { join as joinPath, normalize as normalizePath, sep as pathSeparator } from "path"
+import { DirectoryName, DirectoryPath, FileName, FilePath } from "~/data/io/library/paths"
 import { NamespaceName, ManifestFileEntry } from "~/data/io/library/manifest-file-entry"
 
 export async function readNamespacedPaths(rootPath: DirectoryPath): Promise<DirectoryName[]> {
@@ -14,58 +14,36 @@ export async function readResourcePackFiles(rootPath: DirectoryPath): Promise<Ma
 	const entries: ManifestFileEntry[] = []
 
 	for (const namespace of namespaces) {
-		const namespaceRootPath = joinPath(rootPath, namespace, "optifine", "ctm")
-		const overlaysRootPath = joinPath(namespaceRootPath, "_overlays")
+		const namespacePath = joinPath(rootPath, namespace, "optifine", "ctm")
+		const manifestFilePaths = await readManifestPaths(namespacePath)
+		const fileEntries = manifestFileEntriesForResourcePackNamespace(namespace, manifestFilePaths)
 
-		const rootGroups = await readDirectoryNames(namespaceRootPath)
-		const overlayGroups = await readDirectoryNames(overlaysRootPath)
-
-		const rootFileEntries = await manifestFileEntriesForResourcePackNamespace(namespace, namespaceRootPath, rootGroups, false)
-		const overlayFileEntries = await manifestFileEntriesForResourcePackNamespace(namespace, overlaysRootPath, overlayGroups, true)
-
-		const totalNumberOfEntries = rootFileEntries.length + overlayFileEntries.length
-
-		console.log(`Added ${totalNumberOfEntries} manifest file entries for namespace '${namespace}'.`)
-
-		entries.push(...rootFileEntries, ...overlayFileEntries)
+		entries.push(...fileEntries)
 	}
 
 	return entries
 }
 
-export async function manifestFileEntriesForResourcePackNamespace(
-	namespace: NamespaceName,
-	namespaceRootPath: DirectoryPath,
-	groups: DirectoryName[],
-	overlay: boolean
-): Promise<ManifestFileEntry[]> {
-	const unfilteredFileEntries = await Promise.all(
-		groups.map(async group => {
-			const groupPath = joinPath(namespaceRootPath, group)
-			const fileName = await propertiesFileNameForNamespace(groupPath)
+export function manifestFileEntriesForResourcePackNamespace(namespace: NamespaceName, filePaths: FilePath[]): ManifestFileEntry[] {
+	return filePaths.compactMap(filePath => {
+		const pathComponents = filePath.split(pathSeparator)
+		const manifestFileName = pathComponents.last
+		const manifestId = manifestFileName?.split(".").first
 
-			if (!fileName) {
-				console.warn(`Could not find properties file in path for group '${group}' at '${groupPath}'.`)
-				return undefined
-			}
+		if (!manifestId) {
+			console.error(`Could not extract manifest id from file name '${manifestFileName}' in namespace '${namespace}'.`)
+			return undefined
+		}
 
-			const manifestId = fileName.replace(".properties", "")
-			const filePath = joinPath(groupPath, fileName)
+		const fileEntry: ManifestFileEntry = {
+			id: manifestId,
+			namespace: namespace,
+			path: filePath,
+			file: manifestFileName
+		}
 
-			const fileEntry: ManifestFileEntry = {
-				id: manifestId,
-				namespace: namespace,
-				path: filePath,
-				file: fileName,
-				group: group,
-				overlay: overlay
-			}
-
-			return fileEntry
-		})
-	)
-
-	return unfilteredFileEntries.compact()
+		return fileEntry
+	})
 }
 
 export async function propertiesFileNameForNamespace(groupPath: DirectoryPath): Promise<FileName | undefined> {
@@ -78,7 +56,20 @@ export async function readDirectoryNames(path: DirectoryPath): Promise<Directory
 		const recordNames = await readDirectory(path)
 		return recordNames.filter(name => !name.includes(".") && !name.includes("_overlays"))
 	} catch (error) {
-		// console.log(`Could not list directory contents at '...${path.substring(-32)}', does not exist or can not be accessed.`)
+		console.warn(`Could not list directory contents at '...${path.substring(-32)}', does not exist or can not be accessed.`)
+		return []
+	}
+}
+
+export async function readManifestPaths(path: DirectoryPath): Promise<FilePath[]> {
+	try {
+		const rawFileRecords = await readDirectory(path, { recursive: true, withFileTypes: true })
+		const absoluteFilePaths = rawFileRecords.map(record => normalizePath(joinPath(record.parentPath, record.name)))
+		const manifestFilePaths = absoluteFilePaths.filter(path => path.endsWith(".properties"))
+
+		return manifestFilePaths
+	} catch (error) {
+		console.warn(`Could not read manifest paths from directory '${path}'.`)
 		return []
 	}
 }

@@ -6,8 +6,6 @@ import { BlockTextureManifestRecord } from "~/data/manifest/models/manifest-reco
 export async function readManifests(path: DirectoryPath): Promise<BlockTextureManifestRecord[]> {
 	const fileEntries = await readResourcePackFiles(path)
 
-	console.log(`Read ${fileEntries.length} file entries for manifest files.`)
-
 	const records = (
 		await Promise.all(
 			fileEntries.map(async fileEntry => {
