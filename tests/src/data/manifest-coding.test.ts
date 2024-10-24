@@ -40,7 +40,29 @@ test("Decodes valid manifest data", () => {
 	expect(manifest.layer).toBe("cutout")
 })
 
-test("Throws error for invalid manifest data", () => {
+test("Throws error for empty manifest data", () => {
+	const manifestData = `
+		
+	`
+
+	expect(() => {
+		decodeManifestFromData(manifestData)
+	}).toThrow()
+})
+
+test("Throws error for arbitrary malformed manifest data", () => {
+	const manifestData = `
+		;.;,;,;...
+		sd=c
+		=
+	`
+
+	expect(() => {
+		decodeManifestFromData(manifestData)
+	}).toThrow()
+})
+
+test("Omits partially invalid manifest data", () => {
 	const manifestData = `
 		matchBlocks=stone
 		method=orsverlay
@@ -48,6 +70,20 @@ test("Throws error for invalid manifest data", () => {
 		connect=block
 		connectBlocks=gravel
 		layer=cutouts
+	`
+
+	const decodedManifest = decodeManifestFromData(manifestData)
+
+	expect(decodedManifest.matchBlocks.has("stone")).toBeTrue()
+	expect(decodedManifest.method).toBeUndefined()
+	expect(decodedManifest.tiles).toBe("0-16")
+	expect(decodedManifest.layer).toBeUndefined()
+})
+
+test("Throws error for invalid manifest data keys", () => {
+	const manifestData = `
+		maBlocks=stone
+		cnectBlocks=gravel
 	`
 
 	expect(() => {
