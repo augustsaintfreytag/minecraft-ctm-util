@@ -43,9 +43,6 @@ export function encodeManifestToData(manifest: BlockTextureManifest): string {
 // Decoding
 
 export function decodeManifestFromData(data: string): BlockTextureManifest {
-	const demoBlockSet = BlockSet.from("stone", "granite", "diorite", "andesite")
-	const encodedRawBlockSet = serialize<BlockSet>(demoBlockSet)
-
 	const fileMap: Map<string, string> = new Map(
 		data.split("\n").map(line => {
 			const parts = line
