@@ -7,13 +7,16 @@
 		"skipLibCheck": true,
 		"target": "ESNext",
 		"module": "Preserve",
+		// "module": "ESNext",
 		"moduleResolution": "Bundler",
+		// "moduleResolution": "Node",
+		"sourceMap": true,
 		"rootDir": ".",
 		"paths": {
 			"~/*": ["./src/*"]
 		},
 		"types": ["bun-types"]
 	},
-	"reflection": true
-	// "files": ["app.ts"]
+	"reflection": true,
+	"exclude": ["**/node_modules/**", "**/dist/**"]
 }
