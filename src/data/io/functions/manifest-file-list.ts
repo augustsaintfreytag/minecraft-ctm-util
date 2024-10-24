@@ -13,6 +13,8 @@ export async function readResourcePackFiles(rootPath: DirectoryPath): Promise<Ma
 	const namespaces = await readNamespacedPaths(rootPath)
 	const entries: ManifestFileEntry[] = []
 
+	console.log(`Determined available namespaces: '${namespaces.join("', '")}'.`)
+
 	for (const namespace of namespaces) {
 		const namespacePath = joinPath(rootPath, namespace, "optifine", "ctm")
 		const manifestFilePaths = await readManifestPaths(namespacePath)
@@ -27,6 +29,7 @@ export async function readResourcePackFiles(rootPath: DirectoryPath): Promise<Ma
 export function manifestFileEntriesForResourcePackNamespace(namespace: NamespaceName, filePaths: FilePath[]): ManifestFileEntry[] {
 	return filePaths.compactMap(filePath => {
 		const pathComponents = filePath.split(pathSeparator)
+		const basePath = pathComponents.slice(0, -1).join(pathSeparator)
 		const manifestFileName = pathComponents.last
 		const manifestId = manifestFileName?.split(".").first
 
@@ -35,13 +38,7 @@ export function manifestFileEntriesForResourcePackNamespace(namespace: Namespace
 			return undefined
 		}
 
-		const fileEntry: ManifestFileEntry = {
-			id: manifestId,
-			namespace: namespace,
-			path: filePath,
-			file: manifestFileName
-		}
-
+		const fileEntry = new ManifestFileEntry(manifestId, namespace, basePath, manifestFileName)
 		return fileEntry
 	})
 }

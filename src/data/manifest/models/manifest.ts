@@ -11,7 +11,7 @@ export type BlockTextureMatchTiles = string
 
 export type BlockTextureTileWeights = string
 
-export type BlockTintIndex = integer
+export type BlockTintIndex = integer | string
 
 export type BlockTextureLayer = "cutout_mipped" | "cutout" | "translucent"
 
@@ -42,26 +42,26 @@ export type BlockTextureConnect = "block" | "tile" | "state"
 
 export class BlockTextureManifest {
 	constructor(
-		public readonly method: BlockTextureMethod, // Required method for connecting textures
+		public readonly method: BlockTextureMethod | undefined, // Required method for connecting textures
 		public readonly tiles: BlockTextureTiles, // List of tiles (as string paths)
-		public readonly connectBlocks: BlockSet = BlockSet.empty(), // Set of block names that act as connection origin block
-		public readonly matchBlocks: BlockSet = BlockSet.empty(), // Set of block names that act as connection destination blocks
-		public readonly connect: BlockTextureConnect = "block", // Default: block for blocks, tile for tiles
-		public readonly matchTiles?: BlockTextureMatchTiles, // List of tile names this method should apply to
-		public readonly faces?: Set<BlockFace>, // Optional faces to apply connection
-		public readonly biomes?: Set<BiomeId>, // Optional list of biomes
-		public readonly heights?: Set<integer>, // Optional height restrictions
-		public readonly tintIndex: BlockTintIndex = -1, // Default: -1 (disabled)
-		public readonly tintBlock?: BlockId, // Optional block used for tinting
-		public readonly layer: BlockTextureLayer = "cutout_mipped", // Default render layer is cutout_mipped
-		public readonly weights?: BlockTextureTileWeights, // Optional weights for random textures
-		public readonly randomLoops?: integer, // Optional random loops for random textures
-		public readonly symmetry?: BlockTextureSymmetry, // Optional symmetry option
-		public readonly linked: boolean = false // Default: false
+		public readonly connectBlocks: BlockSet, // Set of block names that act as connection origin block
+		public readonly matchBlocks: BlockSet, // Set of block names that act as connection destination blocks
+		public readonly connect: BlockTextureConnect | undefined, // Default: block for blocks, tile for tiles
+		public readonly matchTiles: BlockTextureMatchTiles | undefined, // List of tile names this method should apply to
+		public readonly faces: Set<BlockFace> | undefined, // Optional faces to apply connection
+		public readonly biomes: Set<BiomeId> | undefined, // Optional list of biomes
+		public readonly heights: Set<integer> | undefined, // Optional height restrictions
+		public readonly tintIndex: BlockTintIndex | undefined, // Default: -1 (disabled)
+		public readonly tintBlock: BlockId | undefined, // Optional block used for tinting
+		public readonly layer: BlockTextureLayer | undefined, // Default render layer is cutout_mipped
+		public readonly weights: BlockTextureTileWeights | undefined, // Optional weights for random textures
+		public readonly randomLoops: integer | undefined, // Optional random loops for random textures
+		public readonly symmetry: BlockTextureSymmetry | undefined, // Optional symmetry option
+		public readonly linked: boolean | undefined // Default: false
 	) {}
 
 	static fromProperties(properties: {
-		method: BlockTextureMethod
+		method?: BlockTextureMethod
 		tiles: BlockTextureTiles
 		connectBlocks?: BlockSet
 		matchBlocks?: BlockSet
@@ -83,18 +83,18 @@ export class BlockTextureManifest {
 			properties.tiles,
 			properties.connectBlocks ?? BlockSet.empty(),
 			properties.matchBlocks ?? BlockSet.empty(),
-			properties.connect ?? "block",
+			properties.connect,
 			properties.matchTiles,
 			properties.faces,
 			properties.biomes,
 			properties.heights,
-			properties.tintIndex ?? -1,
+			properties.tintIndex,
 			properties.tintBlock,
-			properties.layer ?? "cutout_mipped",
+			properties.layer,
 			properties.weights,
 			properties.randomLoops,
 			properties.symmetry,
-			properties.linked ?? false
+			properties.linked
 		)
 	}
 
