@@ -1,7 +1,7 @@
 import { readdir as readDirectory } from "node:fs/promises"
 import { join as joinPath } from "path"
 import { DirectoryName, DirectoryPath, FileName } from "~/data/io/library/paths"
-import { NamespaceName, BlockTexturePropertiesFileEntry } from "~/data/io/library/block-texture-properties-file-entry"
+import { NamespaceName, ManifestFileEntry } from "~/data/io/library/manifest-file-entry"
 
 export async function readNamespacedPaths(rootPath: DirectoryPath): Promise<DirectoryName[]> {
 	const rootGroups = await readDirectoryNames(rootPath)
@@ -9,9 +9,9 @@ export async function readNamespacedPaths(rootPath: DirectoryPath): Promise<Dire
 	return rootGroups
 }
 
-export async function readFiles(rootPath: DirectoryPath): Promise<BlockTexturePropertiesFileEntry[]> {
+export async function readResourcePackFiles(rootPath: DirectoryPath): Promise<ManifestFileEntry[]> {
 	const namespaces = await readNamespacedPaths(rootPath)
-	const entries: BlockTexturePropertiesFileEntry[] = []
+	const entries: ManifestFileEntry[] = []
 
 	for (const namespace of namespaces) {
 		const namespaceRootPath = joinPath(rootPath, namespace, "optifine", "ctm")
@@ -20,12 +20,12 @@ export async function readFiles(rootPath: DirectoryPath): Promise<BlockTexturePr
 		const rootGroups = await readDirectoryNames(namespaceRootPath)
 		const overlayGroups = await readDirectoryNames(overlaysRootPath)
 
-		const rootFileEntries = await propertiesFileEntriesForNamespace(namespace, namespaceRootPath, rootGroups, false)
-		const overlayFileEntries = await propertiesFileEntriesForNamespace(namespace, overlaysRootPath, overlayGroups, true)
+		const rootFileEntries = await manifestFileEntriesForResourcePackNamespace(namespace, namespaceRootPath, rootGroups, false)
+		const overlayFileEntries = await manifestFileEntriesForResourcePackNamespace(namespace, overlaysRootPath, overlayGroups, true)
 
 		const totalNumberOfEntries = rootFileEntries.length + overlayFileEntries.length
 
-		console.log(`Added ${totalNumberOfEntries} properties file entries for namespace '${namespace}'.`)
+		console.log(`Added ${totalNumberOfEntries} manifest file entries for namespace '${namespace}'.`)
 
 		entries.push(...rootFileEntries, ...overlayFileEntries)
 	}
@@ -33,28 +33,30 @@ export async function readFiles(rootPath: DirectoryPath): Promise<BlockTexturePr
 	return entries
 }
 
-export async function propertiesFileEntriesForNamespace(
+export async function manifestFileEntriesForResourcePackNamespace(
 	namespace: NamespaceName,
 	namespaceRootPath: DirectoryPath,
 	groups: DirectoryName[],
 	overlay: boolean
-): Promise<BlockTexturePropertiesFileEntry[]> {
+): Promise<ManifestFileEntry[]> {
 	const unfilteredFileEntries = await Promise.all(
 		groups.map(async group => {
 			const groupPath = joinPath(namespaceRootPath, group)
-			const propertiesFileName = await propertiesFileNameForNamespace(groupPath)
+			const fileName = await propertiesFileNameForNamespace(groupPath)
 
-			if (!propertiesFileName) {
+			if (!fileName) {
 				console.warn(`Could not find properties file in path for group '${group}' at '${groupPath}'.`)
 				return undefined
 			}
 
-			const propertiesFilePath = joinPath(groupPath, propertiesFileName)
+			const manifestId = fileName.replace(".properties", "")
+			const filePath = joinPath(groupPath, fileName)
 
-			const fileEntry: BlockTexturePropertiesFileEntry = {
+			const fileEntry: ManifestFileEntry = {
+				id: manifestId,
 				namespace: namespace,
-				path: propertiesFilePath,
-				file: propertiesFileName,
+				path: filePath,
+				file: fileName,
 				group: group,
 				overlay: overlay
 			}

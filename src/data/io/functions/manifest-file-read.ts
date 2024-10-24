@@ -1,8 +1,9 @@
 import { deserialize } from "@deepkit/type"
-import { BlockTexturePropertiesFileEntry } from "~/data/io/library/block-texture-properties-file-entry"
-import { BlockTextureProperties } from "~/data/properties/models/properties"
+import { BlockSet } from "~/data/blocks/models/block-set"
+import { ManifestFileEntry } from "~/data/io/library/manifest-file-entry"
+import { BlockTextureManifest } from "~/data/manifest/models/manifest"
 
-export async function readBlockTexturePropertiesForEntry(fileEntry: BlockTexturePropertiesFileEntry): Promise<BlockTextureProperties | undefined> {
+export async function readBlockTexturePropertiesForEntry(fileEntry: ManifestFileEntry): Promise<BlockTextureManifest | undefined> {
 	const filePath = fileEntry.path
 	const rawFileContents = await Bun.file(filePath).text()
 
@@ -16,8 +17,8 @@ export async function readBlockTexturePropertiesForEntry(fileEntry: BlockTexture
 	const rawObject = {
 		method: fileMap.get("method"),
 		tiles: fileMap.get("tiles"),
-		connectBlocks: fileMap.get("connectBlocks")?.split(" ").toSet(),
-		matchBlocks: fileMap.get("matchBlocks")?.split(" ").toSet(),
+		connectBlocks: new BlockSet(fileMap.get("connectBlocks")?.split(" ")),
+		matchBlocks: new BlockSet(fileMap.get("matchBlocks")?.split(" ")),
 		matchTiles: fileMap.get("matchTiles"),
 		connect: fileMap.get("connect") || "block",
 		faces: fileMap.get("faces")?.split(" ").toSet(),
@@ -33,7 +34,7 @@ export async function readBlockTexturePropertiesForEntry(fileEntry: BlockTexture
 	}
 
 	try {
-		const properties = deserialize<BlockTextureProperties>(rawObject)
+		const properties = deserialize<BlockTextureManifest>(rawObject)
 		return properties
 	} catch (error) {
 		console.error(`Could not deserialize block texture properties. ${error}`)
