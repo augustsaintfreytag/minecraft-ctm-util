@@ -3,13 +3,12 @@
 	"version": "0.0.1",
 	"description": "A command line utility to visualize, map, and generate Minecraft connected texture properties files.",
 	"private": true,
-	"type": "commonjs",
 	"main": "./dist/app.js",
 	"scripts": {
-		"build": "tsc",
+		"build": "bun build --target=bun --sourcemap=inline app.ts --outdir=dist",
 		"test": "jest",
-		"app": "bun app.ts",
-		"debug": "bun --inspect-wait app.ts",
+		"app": "bun --sourcemap=inline app.ts",
+		"debug": "bun --inspect-wait --sourcemap=inline app.ts",
 		"install": "deepkit-type-install",
 		"app:watch": "node --watch -r ts-node/register app.ts",
 		"update-deepkit": "npx update-by-scope @deepkit"
