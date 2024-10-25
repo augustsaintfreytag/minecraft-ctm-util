@@ -179,7 +179,7 @@ export class BlockPresets {
 	static deeperDarkerBlocks = new BlockSet(["deeperdarker:skulk_stone"])
 
 	// Deeper & Darker Mod Ore Blocks
-	static deeperDarkerOreBlocks = new BlockSet([
+	static deeperDarkerSkulkStoneOreBlocks = new BlockSet([
 		"deeperdarker:skulk_stone_coal_ore",
 		"deeperdarker:skulk_stone_copper_ore",
 		"deeperdarker:skulk_stone_diamond_ore",
@@ -194,23 +194,41 @@ export class BlockPresets {
 	static createBlocks = new BlockSet(["create:limestone", "create:scoria", "create:scorchia"])
 
 	// Create Mod Ore Blocks
-	static createOreBlocks = new BlockSet([
-		"create:zinc_ore",
-		"create:deepslate_zinc_ore",
-		"create:asurine",
-		"create:ochrum",
-		"create:veridium",
-		"create:crimsite"
-	])
+	static createOreBlocks = new BlockSet(["create:zinc_ore", "create:asurine", "create:ochrum", "create:veridium", "create:crimsite"])
+
+	// Create Deepslate Ore Blocks
+	static createDeepslateOreBlocks = new BlockSet(["create:deepslate_zinc_ore"])
 
 	// Create Ironworks Ore Blocks
-	static createIronworksOres = new BlockSet(["create_ironworks:tin_ore", "create_ironworks:deepslate_tin_ore"])
+	static createIronworksOreBlocks = new BlockSet(["create_ironworks:tin_ore"])
+
+	// Create Ironworks Deepslate Ore Blocks
+	static createIronworksDeepslateOreBlocks = new BlockSet(["create_ironworks:deepslate_tin_ore"])
 
 	// Farmer's Delight Mod Blocks
 	static farmersDelightBlocks = new BlockSet(["farmersdelight:rich_soil_farmland", "farmersdelight:rich_soil_farmland_moist"])
 
-	// Aggregating all blocks
-	static allSolidBlocks = new BlockSet([
+	// Yung's Cave Biomes Mod Blocks
+	static yungsCaveBiomesBlocks = new BlockSet([
+		"yungscavebiomes:layered_sandstone",
+		"yungscavebiomes:ancient_sand",
+		"yungscavebiomes:ancient_sandstone",
+		"yungscavebiomes:layered_ancient_sandstone",
+		"yungscavebiomes:chiseled_ancient_sandstone",
+		"yungscavebiomes:cut_ancient_sandstone",
+		"yungscavebiomes:brittle_sandstone",
+		"yungscavebiomes:brittle_ancient_sandstone",
+		"yungscavebiomes:red_sandstone",
+		"yungscavebiomes:brittle_red_sandstone",
+		"yungscavebiomes:layered_red_sandstone",
+		"yungscavebiomes:marble",
+		"yungscavebiomes:rare_ice",
+		"yungscavebiomes:travertine"
+	])
+
+	// Aggregates
+
+	static allRegularBlocks = new BlockSet([
 		...this.dirtLikeBlocks,
 		...this.grassLikeBlocks,
 		...this.stoneLikeBlocks,
@@ -225,13 +243,27 @@ export class BlockPresets {
 		...this.terracottaBlocks,
 		...this.decorativeBlocks,
 		...this.snowBlocks,
-		...this.iceBlocks,
 		...this.netherBlocks,
 		...this.deeperDarkerBlocks,
-		...this.deeperDarkerOreBlocks,
+		...this.deeperDarkerSkulkStoneOreBlocks,
 		...this.createBlocks,
 		...this.createOreBlocks,
-		...this.createIronworksOres,
-		...this.farmersDelightBlocks
+		...this.createDeepslateOreBlocks,
+		...this.createIronworksOreBlocks,
+		...this.createIronworksDeepslateOreBlocks,
+		...this.farmersDelightBlocks,
+		...this.yungsCaveBiomesBlocks
 	])
+
+	static allStoneOreBlocks = new BlockSet([...this.stoneOreBlocks, ...this.createOreBlocks, ...this.createIronworksOreBlocks])
+
+	static allBlackstoneOreBlocks = new BlockSet([...this.blackstoneOreBlocks])
+
+	static allDeepslateOreBlocks = new BlockSet([
+		...this.deepslateOreBlocks,
+		...this.createDeepslateOreBlocks,
+		...this.createIronworksDeepslateOreBlocks
+	])
+
+	static allSkulkStoneOreBlocks = new BlockSet([...this.deeperDarkerSkulkStoneOreBlocks])
 }
