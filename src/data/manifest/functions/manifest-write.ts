@@ -1,3 +1,4 @@
+import { systemLogger } from "~/app/logger"
 import { encodeManifestToData } from "~/data/io/functions/manifest-file-coding"
 import { BlockTextureManifestRecord } from "~/data/manifest/models/manifest-record"
 
@@ -6,10 +7,7 @@ export async function writeAllManifests(records: BlockTextureManifestRecord[]): 
 		const filePath = record.entry.filePath
 		const manifestData = encodeManifestToData(record.manifest)
 
-		const writer = Bun.file(filePath).writer()
-
-		writer.write(manifestData)
-		writer.end()
+		Bun.write(filePath, manifestData)
 
 		systemLogger.log(`Wrote modified manifest for block '${record.entry.id}' to file '${filePath}'.`)
 	})
