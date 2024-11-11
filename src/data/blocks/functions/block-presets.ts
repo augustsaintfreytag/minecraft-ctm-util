@@ -118,7 +118,7 @@ export class BlockPresets {
 		"bricks",
 		"bone_block",
 		"pumpkin",
-		"jack_o'lantern",
+		"jack_o_lantern",
 		"dead_tube_coral_block",
 		"dead_brain_coral_block",
 		"dead_bubble_coral_block",
