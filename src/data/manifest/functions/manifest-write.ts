@@ -11,6 +11,6 @@ export async function writeAllManifests(records: BlockTextureManifestRecord[]): 
 		writer.write(manifestData)
 		writer.end()
 
-		console.log(`Wrote modified manifest for block '${record.entry.id}' to file '${filePath}'.`)
+		systemLogger.log(`Wrote modified manifest for block '${record.entry.id}' to file '${filePath}'.`)
 	})
 }

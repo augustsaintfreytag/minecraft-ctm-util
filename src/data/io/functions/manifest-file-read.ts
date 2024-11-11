@@ -1,3 +1,4 @@
+import { systemLogger } from "~/app/logger"
 import { decodeManifestFromData } from "~/data/io/functions/manifest-file-coding"
 import { ManifestFileEntry } from "~/data/io/library/manifest-file-entry"
 import { BlockTextureManifest } from "~/data/manifest/models/manifest"
@@ -10,7 +11,7 @@ export async function readAndDecodeManifest(fileEntry: ManifestFileEntry): Promi
 		const properties = decodeManifestFromData(rawFileContents)
 		return properties
 	} catch (error) {
-		console.error(`Could not decode manifest from file '${filePath}'. ${error}`)
+		systemLogger.error(`Could not decode manifest from file '${filePath}'. ${error}`)
 		return undefined
 	}
 }

@@ -1,7 +1,8 @@
 import { readdir as readDirectory } from "node:fs/promises"
 import { join as joinPath, normalize as normalizePath, sep as pathSeparator } from "path"
+import { systemLogger } from "~/app/logger"
+import { ManifestFileEntry, NamespaceName } from "~/data/io/library/manifest-file-entry"
 import { DirectoryName, DirectoryPath, FileName, FilePath } from "~/data/io/library/paths"
-import { NamespaceName, ManifestFileEntry } from "~/data/io/library/manifest-file-entry"
 
 export async function readNamespacedPaths(rootPath: DirectoryPath): Promise<DirectoryName[]> {
 	const rootGroups = await readDirectoryNames(rootPath)
@@ -13,7 +14,7 @@ export async function readResourcePackFiles(rootPath: DirectoryPath): Promise<Ma
 	const namespaces = await readNamespacedPaths(rootPath)
 	const entries: ManifestFileEntry[] = []
 
-	console.log(`Determined available namespaces: '${namespaces.join("', '")}'.`)
+	systemLogger.log(`Determined available namespaces: '${namespaces.join("', '")}'.`)
 
 	for (const namespace of namespaces) {
 		const namespacePath = joinPath(rootPath, namespace, "optifine", "ctm")
@@ -34,7 +35,7 @@ export function manifestFileEntriesForResourcePackNamespace(namespace: Namespace
 		const manifestId = manifestFileName?.split(".").first
 
 		if (!manifestId) {
-			console.error(`Could not extract manifest id from file name '${manifestFileName}' in namespace '${namespace}'.`)
+			systemLogger.error(`Could not extract manifest id from file name '${manifestFileName}' in namespace '${namespace}'.`)
 			return undefined
 		}
 
@@ -53,7 +54,7 @@ export async function readDirectoryNames(path: DirectoryPath): Promise<Directory
 		const recordNames = await readDirectory(path)
 		return recordNames.filter(name => !name.includes(".") && !name.includes("_overlays"))
 	} catch (error) {
-		console.warn(`Could not list directory contents at '...${path.substring(-32)}', does not exist or can not be accessed.`)
+		systemLogger.warn(`Could not list directory contents at '...${path.substring(-32)}', does not exist or can not be accessed.`)
 		return []
 	}
 }
@@ -66,7 +67,7 @@ export async function readManifestPaths(path: DirectoryPath): Promise<FilePath[]
 
 		return manifestFilePaths
 	} catch (error) {
-		console.warn(`Could not read manifest paths from directory '${path}'.`)
+		systemLogger.warn(`Could not read manifest paths from directory '${path}'.`)
 		return []
 	}
 }

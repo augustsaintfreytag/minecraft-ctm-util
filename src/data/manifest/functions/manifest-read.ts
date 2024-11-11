@@ -1,3 +1,4 @@
+import { systemLogger } from "~/app/logger"
 import { readResourcePackFiles } from "~/data/io/functions/manifest-file-list"
 import { readAndDecodeManifest } from "~/data/io/functions/manifest-file-read"
 import { DirectoryPath } from "~/data/io/library/paths"
@@ -12,7 +13,7 @@ export async function readAllManifests(path: DirectoryPath): Promise<BlockTextur
 				const fileProperties = await readAndDecodeManifest(fileEntry)
 
 				if (!fileProperties) {
-					console.error(`Could not read or decode file properties at path '${fileEntry.filePath}'.`)
+					systemLogger.error(`Could not read or decode file properties at path '${fileEntry.filePath}'.`)
 					return undefined
 				}
 
