@@ -110,7 +110,7 @@ export class BlockTextureManifest {
 
 	// Replicators
 
-	withTint(tintIndex: BlockTintIndex, tintBlock: BlockId): BlockTextureManifest {
+	withTint(tintIndex: BlockTintIndex, tintBlock?: BlockId): BlockTextureManifest {
 		return BlockTextureManifest.fromProperties({
 			...this,
 			tintIndex,
