@@ -30,9 +30,9 @@ export class BlockPresets {
 		"chiseled_stone_bricks",
 		"cracked_stone_bricks",
 		"infested_stone",
-		"infested_stonebrick",
+		"infested_cobblestone",
 		"infested_stone_bricks",
-		"infested_cracked_stone_brick",
+		"infested_cracked_stone_bricks",
 		"infested_mossy_stone_bricks",
 		"infested_chiseled_stone_bricks",
 		"granite",
@@ -41,6 +41,7 @@ export class BlockPresets {
 		"tuff",
 		"calcite",
 		"dripstone_block",
+		"magma_block",
 		"obsidian"
 	])
 
@@ -127,6 +128,7 @@ export class BlockPresets {
 		"crying_obsidian",
 		"nether_wart_block",
 		"warped_wart_block",
+		"amethyst_block",
 		"glowstone",
 		"shroomlight"
 	])
@@ -157,8 +159,7 @@ export class BlockPresets {
 		"nether_bricks",
 		"red_nether_bricks",
 		"cracked_nether_bricks",
-		"chiseled_nether_bricks",
-		"magma_block"
+		"chiseled_nether_bricks"
 	])
 
 	// Log Blocks
