@@ -1,18 +1,16 @@
 import "~/types/extensions"
 
-import { App } from "@deepkit/app"
+import { App, Flag } from "@deepkit/app"
 import { FrameworkModule } from "@deepkit/framework"
-import { JSONTransport, Logger } from "@deepkit/logger"
 import { AppConfig } from "~/app/config"
+import { enableVerbose, reportLogger, systemLogger } from "~/app/logger"
 import { readResourcePackFiles } from "~/data/io/functions/manifest-file-list"
 import { DirectoryPath } from "~/data/io/library/paths"
 import { manifestPresetByBlockId } from "~/data/manifest/functions/manifest-presets"
 import { readAllManifests } from "~/data/manifest/functions/manifest-read"
-import { decodeManifestFromData } from "~/data/io/functions/manifest-file-coding"
-import { BlockTextureManifestRecord } from "~/data/manifest/models/manifest-record"
 import { writeAllManifests } from "~/data/manifest/functions/manifest-write"
-import { ManifestFileEntry } from "~/data/io/library/manifest-file-entry"
-import { join as joinPath, normalize as normalizePath, sep as pathSeparator } from "path"
+import { BlockTextureManifestRecord } from "~/data/manifest/models/manifest-record"
+import { ManifestStats } from "~/data/manifest/models/manifest-stats"
 
 new App({
 	config: AppConfig,
@@ -23,39 +21,46 @@ new App({
 	.loadConfigFromEnv({ envFilePath: ["production.env", ".env"] })
 	.setup((module, config: AppConfig) => {
 		if (config.environment === "production") {
-			// enable logging JSON messages instead of formatted strings
-			module.configureProvider<Logger>(v => v.setTransport([new JSONTransport()]))
 			// disable debugging
 			module.getImportedModuleByClass(FrameworkModule).configure({ debug: false })
 		}
 	})
-	.command("list", async (path: DirectoryPath) => {
+	.command("list", async (path: DirectoryPath, verbose: boolean & Flag = false) => {
+		verbose && enableVerbose()
 		const fileEntries = await readResourcePackFiles(path)
 
 		fileEntries.forEach(fileEntry => {
-			console.log(`Namespace: '${fileEntry.namespace}', File: '${fileEntry.file}'`)
+			systemLogger.log(`Namespace: '${fileEntry.namespace}', File: '${fileEntry.file}'`)
 		})
 	})
-	.command("analyze", async (path: DirectoryPath) => {
+	.command("analyze", async (path: DirectoryPath, verbose: boolean & Flag = false) => {
+		verbose && enableVerbose()
 		// Command reserved to check correct hierarchy (no circular references).
 	})
-	.command("rewrite", async (path: DirectoryPath) => {
-		console.log(`Reading manifest presets from resource pack root '${path}'.`)
+	.command("rewrite", async (path: DirectoryPath, verbose: boolean & Flag = false) => {
+		verbose && enableVerbose()
+		systemLogger.log(`Reading manifest presets from resource pack root '${path}'.`)
 
 		const manifestPresets = manifestPresetByBlockId()
 		const manifestRecords = await readAllManifests(path)
+		const manifestStats = new ManifestStats()
 
 		const changedManifestRecords = manifestRecords.compactMap(manifestRecord => {
 			const originalEntry = manifestRecord.entry
+			const namespace = originalEntry.namespace
 			const presetManifest = manifestPresets.get(originalEntry.id)
+
+			manifestStats.addFoundId(namespace, originalEntry.id)
 
 			if (!presetManifest) {
 				return undefined
 			}
 
+			manifestStats.addRewrittenId(namespace, originalEntry.id)
 			return new BlockTextureManifestRecord(originalEntry, presetManifest)
 		})
 
 		writeAllManifests(changedManifestRecords)
+		reportLogger.log(manifestStats.reportDescriptionForAllNamespaces.join("\n"))
 	})
 	.run()
