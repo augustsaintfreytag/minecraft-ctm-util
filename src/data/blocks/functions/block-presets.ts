@@ -153,7 +153,7 @@ export class BlockPresets {
 	// Nether-related Blocks
 	static netherBlocks = new BlockSet([
 		"netherrack",
-		"netherrack_gold_ore",
+		"nether_gold_ore",
 		"nether_bricks",
 		"red_nether_bricks",
 		"cracked_nether_bricks",
