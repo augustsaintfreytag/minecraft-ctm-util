@@ -223,10 +223,20 @@ export class BlockPresets {
 		"yungscavebiomes:red_sandstone",
 		"yungscavebiomes:brittle_red_sandstone",
 		"yungscavebiomes:layered_red_sandstone",
-		"yungscavebiomes:marble",
-		"yungscavebiomes:rare_ice",
-		"yungscavebiomes:travertine"
+		"yungscavebiomes:rare_ice"
 	])
+
+	// Galosphere Blocks
+	static galosphereBlocks = new BlockSet([
+		"galosphere:pink_salt",
+		"galosphere:rose_pink_salt",
+		"galosphere:pastel_pink_salt",
+		"galosphere:lumiere_block"
+	])
+
+	static galosphereOreBlocks = new BlockSet(["galosphere:silver_ore"])
+
+	static galosphereDeepslateOreBlocks = new BlockSet(["galosphere:deepslate_silver_ore"])
 
 	// Aggregates
 
@@ -254,17 +264,26 @@ export class BlockPresets {
 		...this.createIronworksOreBlocks,
 		...this.createIronworksDeepslateOreBlocks,
 		...this.farmersDelightBlocks,
-		...this.yungsCaveBiomesBlocks
+		...this.yungsCaveBiomesBlocks,
+		...this.galosphereBlocks,
+		...this.galosphereOreBlocks,
+		...this.galosphereDeepslateOreBlocks
 	])
 
-	static allStoneOreBlocks = new BlockSet([...this.stoneOreBlocks, ...this.createOreBlocks, ...this.createIronworksOreBlocks])
+	static allStoneOreBlocks = new BlockSet([
+		...this.stoneOreBlocks,
+		...this.createOreBlocks,
+		...this.createIronworksOreBlocks,
+		...this.galosphereOreBlocks
+	])
 
 	static allBlackstoneOreBlocks = new BlockSet([...this.blackstoneOreBlocks])
 
 	static allDeepslateOreBlocks = new BlockSet([
 		...this.deepslateOreBlocks,
 		...this.createDeepslateOreBlocks,
-		...this.createIronworksDeepslateOreBlocks
+		...this.createIronworksDeepslateOreBlocks,
+		...this.galosphereDeepslateOreBlocks
 	])
 
 	static allSkulkStoneOreBlocks = new BlockSet([...this.deeperDarkerSkulkStoneOreBlocks])
