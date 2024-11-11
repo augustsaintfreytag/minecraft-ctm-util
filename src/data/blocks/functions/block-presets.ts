@@ -4,6 +4,7 @@ export class BlockPresets {
 	// Dirt-like Blocks
 	static dirtLikeBlocks = new BlockSet([
 		"dirt",
+		"dirt_path",
 		"coarse_dirt",
 		"rooted_dirt",
 		"sand",
