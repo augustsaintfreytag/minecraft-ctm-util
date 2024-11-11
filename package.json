@@ -6,11 +6,10 @@
 	"main": "./dist/app.js",
 	"scripts": {
 		"build": "bun build --target=bun --sourcemap=inline app.ts --outdir=dist",
-		"test": "jest",
+		"test": "bun test --preload='@deepkit/bun'",
 		"app": "bun --sourcemap=inline app.ts",
 		"debug": "bun --inspect-wait --sourcemap=inline app.ts",
-		"install": "deepkit-type-install",
-		"app:watch": "node --watch -r ts-node/register app.ts",
+		"install-deepkit": "deepkit-type-install",
 		"update-deepkit": "npx update-by-scope @deepkit"
 	},
 	"dependencies": {
