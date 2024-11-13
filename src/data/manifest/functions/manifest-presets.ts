@@ -103,6 +103,22 @@ export function manifestPresetByBlockId(): Map<BlockId, BlockTextureManifest> {
 			.withTint(0, "grass_block")
 			.matchingBlocks(BlockPresets.allRegularBlocks.with(BlockPresets.logBlocks))
 			.connectingBlocks(blocks)
+			.markIndependent()
+	)
+
+	registerManifestPreset("grass_block_a", BlockSet.from("grass_block"), blocks =>
+		BlockTextureManifest.forOverlayBlock("20-36", new Set(["sides"]), "cutout.mipped")
+			.withTint(0, "dirt")
+			.matchingBlocks(BlockPresets.allRegularBlocks.with(BlockPresets.logBlocks))
+			.connectingBlocks(blocks)
+			.markIndependent()
+	)
+
+	registerManifestPreset("grass_block_b", BlockSet.from("grass_block"), blocks =>
+		BlockTextureManifest.forOverlayBlock("40-56", new Set(["sides"]), "cutout.mipped")
+			.withTint(0, "grass_block")
+			.matchingBlocks(BlockPresets.allRegularBlocks.with(BlockPresets.logBlocks))
+			.connectingBlocks(blocks)
 	)
 
 	registerManifestPreset("rich_soil", BlockSet.from("farmersdelight:rich_soil"), blocks =>
