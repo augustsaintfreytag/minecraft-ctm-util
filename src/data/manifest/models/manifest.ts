@@ -13,7 +13,7 @@ export type BlockTextureTileWeights = string
 
 export type BlockTintIndex = integer | string
 
-export type BlockTextureLayer = "cutout_mipped" | "cutout" | "translucent"
+export type BlockTextureLayer = "cutout.mipped" | "cutout" | "translucent"
 
 export type BlockTextureSymmetry = "none" | "opposite" | "all"
 
