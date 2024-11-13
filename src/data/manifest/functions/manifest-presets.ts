@@ -172,7 +172,6 @@ export function manifestPresetByBlockId(): Map<BlockId, BlockTextureManifest> {
 		blocks => BlockTextureManifest.forDefaultOverlayBlock().matchingBlocks(BlockPresets.allRegularBlocks).connectingBlocks(blocks)
 	)
 
-	// Check if vanilla red sandstone extension fits with Yung's Cave Biomes red sandstone.
 	registerManifestPreset(
 		"red_sandstone",
 		BlockSet.from(
