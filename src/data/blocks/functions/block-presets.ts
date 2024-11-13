@@ -230,7 +230,8 @@ export class BlockPresets {
 		"galosphere:pink_salt",
 		"galosphere:rose_pink_salt",
 		"galosphere:pastel_pink_salt",
-		"galosphere:lumiere_block"
+		"galosphere:lumiere_block",
+		"galosphere:allurite_block"
 	])
 
 	static galosphereOreBlocks = new BlockSet(["galosphere:silver_ore"])

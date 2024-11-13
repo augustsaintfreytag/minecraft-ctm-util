@@ -251,6 +251,32 @@ export function manifestPresetByBlockId(): Map<BlockId, BlockTextureManifest> {
 		BlockTextureManifest.forDefaultOverlayBlock().matchingBlocks(BlockPresets.allRegularBlocks).connectingBlocks(blocks)
 	)
 
+	registerManifestPreset("allurite_block", BlockSet.from("galosphere:allurite_block"), blocks =>
+		BlockTextureManifest.forDefaultOverlayBlock().matchingBlocks(BlockPresets.allRegularBlocks).connectingBlocks(blocks)
+	)
+
+	registerManifestPreset("lumiere_block", BlockSet.from("galosphere:lumiere_block"), blocks =>
+		BlockTextureManifest.forDefaultOverlayBlock().matchingBlocks(BlockPresets.allRegularBlocks).connectingBlocks(blocks)
+	)
+
+	registerManifestPreset("pink_salt", BlockSet.from("galosphere:pink_salt"), blocks =>
+		BlockTextureManifest.forDefaultOverlayBlock()
+			.matchingBlocks(BlockSet.from("galosphere:rose_pink_salt", "galosphere:pastel_pink_salt"))
+			.connectingBlocks(blocks)
+			.markIndependent()
+	)
+
+	registerManifestPreset("rose_pink_salt", BlockSet.from("galosphere:rose_pink_salt"), blocks =>
+		BlockTextureManifest.forDefaultOverlayBlock()
+			.matchingBlocks(BlockSet.from("galosphere:pastel_pink_salt"))
+			.connectingBlocks(blocks)
+			.markIndependent()
+	)
+
+	registerManifestPreset("pastel_pink_salt", BlockSet.from("galosphere:pastel_pink_salt"), blocks =>
+		BlockTextureManifest.forDefaultOverlayBlock().matchingBlocks(BlockSet.empty()).connectingBlocks(blocks).markIndependent()
+	)
+
 	registerManifestPreset("mossy_cobblestone", BlockSet.from("mossy_cobblestone"), blocks =>
 		BlockTextureManifest.forDefaultOverlayBlock().matchingBlocks(BlockPresets.allRegularBlocks).connectingBlocks(blocks)
 	)
