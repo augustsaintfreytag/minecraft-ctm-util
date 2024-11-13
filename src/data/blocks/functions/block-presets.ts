@@ -126,7 +126,6 @@ export class BlockPresets {
 		"dead_bubble_coral_block",
 		"dead_fire_coral_block",
 		"dead_horn_coral_block",
-		"crying_obsidian",
 		"nether_wart_block",
 		"warped_wart_block",
 		"amethyst_block",
