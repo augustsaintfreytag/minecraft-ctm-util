@@ -243,6 +243,7 @@ export class BlockPresets {
 		...this.dirtLikeBlocks,
 		...this.grassLikeBlocks,
 		...this.stoneLikeBlocks,
+		...this.iceBlocks,
 		...this.stoneOreBlocks,
 		...this.deepslateBlocks,
 		...this.deepslateOreBlocks,
