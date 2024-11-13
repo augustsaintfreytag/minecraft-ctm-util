@@ -28,7 +28,7 @@ export function manifestPresetByBlockId(): Map<BlockId, BlockTextureManifest> {
 	// Snow
 
 	registerManifestPreset("snow_block", BlockSet.from("snow_block"), blocks =>
-		BlockTextureManifest.forDefaultOverlayBlock().matchingBlocks(BlockPresets.allRegularBlocks).connectingBlocks(blocks)
+		BlockTextureManifest.forDefaultTopOverlayBlock().matchingBlocks(BlockPresets.allRegularBlocks).connectingBlocks(blocks)
 	)
 
 	// Loose/Coarse Blocks
