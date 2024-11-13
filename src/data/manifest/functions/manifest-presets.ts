@@ -7,11 +7,21 @@ export function manifestPresetByBlockId(): Map<BlockId, BlockTextureManifest> {
 	const registeredMatchingBlocks = BlockSet.empty()
 
 	const registerManifestPreset = (id: string, blocks: BlockSet, block: (blocks: BlockSet) => BlockTextureManifest) => {
-		registeredMatchingBlocks.union(blocks)
-
+		// Create naive draft with all requested blocks as specified.
 		const manifestDraft = block(blocks)
+
+		// If manifest requests the blocks to only connect to themselves,
+		// they will not be added to the tally blacklist and blocks registered
+		// after it will still be able to connect to this set of blocks.
+		if (!manifestDraft._independent) {
+			registeredMatchingBlocks.union(blocks)
+		}
+
+		// Subtract blocks from the tally blacklist, assuming they already connect to them.
+		// This effectively prevents two-way connections between blocks.
 		const manifest = manifestDraft.notMatchingBlocks(registeredMatchingBlocks)
 
+		// Register the manifest for the specified blocks to be saved.
 		manifestsByBlockId.set(id, manifest)
 	}
 

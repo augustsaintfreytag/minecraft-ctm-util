@@ -57,7 +57,8 @@ export class BlockTextureManifest {
 		public readonly weights: BlockTextureTileWeights | undefined, // Optional weights for random textures
 		public readonly randomLoops: integer | undefined, // Optional random loops for random textures
 		public readonly symmetry: BlockTextureSymmetry | undefined, // Optional symmetry option
-		public readonly linked: boolean | undefined // Default: false
+		public readonly linked: boolean | undefined, // Default: false
+		public readonly _independent?: boolean // Default false; Internal, marks a block that only connects to its own variants
 	) {}
 
 	static fromProperties(properties: {
@@ -77,6 +78,7 @@ export class BlockTextureManifest {
 		randomLoops?: integer
 		symmetry?: BlockTextureSymmetry
 		linked?: boolean
+		_independent?: boolean
 	}): BlockTextureManifest {
 		return new BlockTextureManifest(
 			properties.method,
@@ -94,7 +96,8 @@ export class BlockTextureManifest {
 			properties.weights,
 			properties.randomLoops,
 			properties.symmetry,
-			properties.linked
+			properties.linked,
+			properties._independent ?? false
 		)
 	}
 
@@ -106,6 +109,10 @@ export class BlockTextureManifest {
 
 	static forDefaultTopOverlayBlock(): BlockTextureManifest {
 		return BlockTextureManifest.fromProperties({ method: "overlay", tiles: "0-16", faces: new Set(["top"]), connect: "block", layer: "cutout" })
+	}
+
+	static forOverlayBlock(tiles: BlockTextureTiles, faces: Set<BlockFace>, layer: BlockTextureLayer): BlockTextureManifest {
+		return BlockTextureManifest.fromProperties({ method: "overlay", tiles, faces, connect: "block", layer })
 	}
 
 	// Replicators
@@ -137,6 +144,13 @@ export class BlockTextureManifest {
 			...this,
 			connectBlocks: this.connectBlocks?.with(blocks),
 			matchBlocks: this.matchBlocks?.without(blocks)
+		})
+	}
+
+	markIndependent(): BlockTextureManifest {
+		return BlockTextureManifest.fromProperties({
+			...this,
+			_independent: true
 		})
 	}
 }
